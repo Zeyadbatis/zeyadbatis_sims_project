@@ -21,19 +21,17 @@ import org.apache.derby.client.am.SqlException;
  * @author zeyad
  */
 public class SearchStudent {
-    
-    // Scanner for reading user input
-    Scanner scan = new Scanner(System.in);
+
     
     // Instances of classes
-      DBManager dbManager;
+    DBManager dbManager;
     Connection conn;
 
     Panel panel;
     
     
     
-     // Constructor initializing the SearchStudent class with panel and student file manager
+     // Constructor initializing the SearchStudent class 
     public SearchStudent(Panel panel, DBManager dbManager){
       
         this.panel = panel;
@@ -41,15 +39,20 @@ public class SearchStudent {
   
     }
     
-     // Method to search for a student based on various criteria
+     // Method to search for a student based on various criteria and return an array of student with updated info
     public Object[][] searchStudents(String firstName, String lastName, String email, String major, char gender){
         
         
-        ArrayList<Student> studentList = new ArrayList<>();    
+          // List to hold the resulting students
+        ArrayList<Student> studentList = new ArrayList<>(); 
+        
+          // StringBuilder to construct the SQL query dynamically
        StringBuilder query = new StringBuilder("SELECT * FROM STUDENT WHERE 1=1");
+         // List to hold the parameters for the prepared statement
        List<Object> parameters = new ArrayList<>();
 
        
+       // Dynamically build the query based on non-blank input parameters
        if(!firstName.isBlank()){
            
            query.append(" AND FIRSTNAME = ?");
@@ -69,23 +72,24 @@ public class SearchStudent {
            query.append(" AND major = ?");
            parameters.add(major);
        }
-       if(gender =='M' || gender =='F'){
+       if(gender =='m' || gender =='f'){
            query.append(" AND gender = ?");
            parameters.add(String.valueOf(gender));
        }
        
        
+            // Execute the prepared statement and retrieve the results
        try { PreparedStatement preparedStatement = conn.prepareStatement(query.toString());
         // Set the parameters for the prepared statement
         for (int i = 0; i < parameters.size(); i++) {
             preparedStatement.setObject(i + 1, parameters.get(i));
         }
 
-        // Execute the query
+           // Execute the query and process the ResultSet
         ResultSet rs = preparedStatement.executeQuery(); 
-       
        while(rs.next()){
            
+             // Retrieve data from the current row
            int id = rs.getInt("ID");
            String stFirstName = rs.getString("Firstname");
            String stLastName = rs.getString("lastname");
@@ -93,15 +97,18 @@ public class SearchStudent {
            String stMajor = rs.getString("major");
            char stGender = rs.getString("GENDER").charAt(0);
            
+               // Create a new Student object and add it to the list
            Student student = new Student(id,stFirstName,stLastName,stEmail,stMajor,stGender);
            studentList.add(student);
        }
                
        }catch (SQLException ex){
+              // Handle any SQL exceptions that occur
           System.err.println("An error occurred while searching for students: " + ex.getMessage());
     ex.printStackTrace();
        }
        
+          // Convert the list of students to a 2D array to return
        Object[][] studentData = new Object[studentList.size()][6];
        for (int i = 0; i < studentList.size(); i++){
            
@@ -115,90 +122,9 @@ public class SearchStudent {
         studentData[i][5] = student.getGender();
        }
        
-       return studentData;
+       return studentData;   // Return the resulting 2D array of student data
         
-        
-        /* 
-        boolean validInput = false;
-        String input = "";
-        
-        System.out.println(helper.spliter);
-        System.out.println("Search for a student");
-        System.out.println(helper.spacer);
-        
-        // Prompt user to choose a search option
-      int choice =  helper.inputInt("Choose from the following\n1) Search by Id \n2) Search by first name\n3) Search by last name\n"
-                +"4) Search by Email\n5) Search by major\n6) Search by gender", 6);
-      
-      // Loop to scan user input for student searching
-      while (!validInput){
-         
-      try {
-          
-          validInput = true;
-          switch (choice){
-              
-              case 1:
-                  System.out.println("Enter ID:");
-                  int id = Integer.parseInt(scan.nextLine()); 
-                  searchById(id);
-                  break;
-                  
-              case 2:
-                  System.out.println("Enter first name");
-                  input = scan.nextLine();
-                  searchByFirstName(input);
-                  break;
-                  
-              case 3: 
-                  System.out.println("Enter last name");
-                  input = scan.next();
-                  searchByLastName(input);
-                  break;
-              case 4:
-                  System.out.println("Enter Email");
-                  input = scan.next();
-                  searchByEmail(input);
-                  break;
-                  
-              case 5:
-                  System.out.println("Enter Major");
-                  input = scan.next();
-                  searchByMajor(input);
-                  break;
-              case 6:
-                  System.out.println("Enter Gender");
-                  input = scan.next();
-                  char gender = input.charAt(0);
-                  searchByGender(gender);
-                  break;      
-          }
-      }catch (Exception e){
-          System.out.println(helper.spliter);
-          System.out.println("Enter a valid input");
-          validInput = false;
-          }
-      
-      
-      }
-      helper.endOfQuery();
-       
-    }
     
-    
-    // Method to search for a student by ID
-    private void searchById(int id){
-        studentFile.getStudent();
-        System.out.println(helper.spliter+helper.spliter+helper.spliter);
-        System.out.println("Students found:");
-        
-        studentManager.selectAllStudents(id);
-       /* for(Student i:studentFile.studentList){
-            if (id == i.getId())
-            printStudent(i);
-        }
-
-      */
     }
       
     

@@ -21,7 +21,7 @@ abstract class Person {
                this.lastName  = lastName;
            }
 
-    // setters and getters
+    //   setters and getters
     public String getFirstName() {
         return firstName;
     }

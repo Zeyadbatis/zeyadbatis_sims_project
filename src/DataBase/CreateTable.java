@@ -16,27 +16,30 @@ import javax.swing.JOptionPane;
  */
 public class CreateTable {
     
+    
+     //instances classes
     DBManager dbManager;
     Connection conn;
     Statement st;
     
+      // Constructor that initializes the DBManager and creates the tables
     public CreateTable(DBManager dbManager){
         
         this.dbManager = dbManager;
         this.conn = dbManager.getConnection();
-        createStudentsTable();
-        
-        createStaffTable();
+        createStudentsTable();  // Create the Students table if it doesn't exist
+        createStaffTable(); // Create the Staff table if it doesn't exist
     }
     
     
+     // Method to create the Students table
     private void createStudentsTable(){
          try (Statement statement = conn.createStatement()) {
             // check if table already exists
             ResultSet resultSet = conn.getMetaData().getTables(null, null, "Student", null);
             if (resultSet.next()) {
                 
-                return;
+                return;  // Exit if the table already exists
             }
 
             // sql query to create the fruits table

@@ -111,7 +111,7 @@ public class Student extends Person {
                 
                 + " gender=" + gender + ",\n"
                 
-                + " major=" + major + ",\n";
+                + "  major=" + major + ",\n";
                 
     }
 

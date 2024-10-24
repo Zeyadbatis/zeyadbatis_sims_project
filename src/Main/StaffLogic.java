@@ -20,9 +20,6 @@ import java.util.Scanner;
  */
 public class StaffLogic{
     
- 
-    
-    
     //instances classes
     Panel panel;
     DBManager dbManager;
@@ -40,26 +37,30 @@ public class StaffLogic{
     //Handles staff login by verifying credentials.
     public boolean ValidUserLogin(String username,String password){
         
-        try {ResultSet rs = dbManager.queryDB("SELECT * FROM STAFF");
+        try {
+             // Query the database for staff information
+            ResultSet rs = dbManager.queryDB("SELECT * FROM STAFF");
        
-        
+         // Iterate over the result set to check credentials
         while(rs.next()){
             String dbUsername = rs.getString("USERNAME");
             String dbPassword = rs.getString("PASSWORD");
-            System.out.println(dbUsername +" "+ dbPassword);
-            
+          
+               // Check if the input matches the retrieved credentials
             if (dbUsername.equalsIgnoreCase(username) && dbPassword.equals(password))
             {
-                return true;
+                return true;// Login successful
             }}
+         // Handle any SQL exceptions
         }catch(SQLException ex){
-            
+             ex.printStackTrace();
         }
         
-        return false;
+        return false;// Login failed
   
     }
     
+    //Checks if a username is available for registration.
     public boolean validUsername(String username){
         
          String query = "SELECT Username FROM staff WHERE Username = ?";
@@ -83,18 +84,22 @@ public class StaffLogic{
     return false; // Return false in case of an exception
 
     }
-    
+    //Updates the password of an existing staff member.
     public boolean update(String password, String username){
         
          boolean updated =  false;
         String query = "UPDATE STAFF SET Password = ? WHERE Username = ?";
         
-        try { PreparedStatement pstmt =conn.prepareStatement(query);
+        try { 
+              // Prepare the update statement
+            PreparedStatement pstmt =conn.prepareStatement(query);
         
         pstmt.setString(1, password);
         pstmt.setString(2, username);
+         // Execute the update
         int rowsAffected = pstmt.executeUpdate();
         
+          // Check if the update was successful
          if (rowsAffected > 0) {
             System.out.println("staff successfully added.");
             updated = true;
@@ -103,6 +108,7 @@ public class StaffLogic{
             updated = false;
         }
         
+         // Handle any exceptions
     }catch (SQLException ex){
         ex.printStackTrace();
         updated = false;
@@ -110,21 +116,27 @@ public class StaffLogic{
         return updated;
     }
     
+    // Registers a new staff member with the given details.
       public boolean register(String username,String password, String firstName, String lastName){
            boolean stAdded;
     
-    try { String sql = "INSERT INTO Staff (username, password,firstName, lastName) VALUES(?,?,?,?)";
+    try { 
+         // SQL insert query for adding a new staff member
+        String sql = "INSERT INTO Staff (username, password,firstName, lastName) VALUES(?,?,?,?)";
     
+        
+         // Prepare the statement
     PreparedStatement pstmt = dbManager.getConnection().prepareStatement(sql);
         pstmt.setString(1, username.toLowerCase());
         pstmt.setString(2, password);
-        pstmt.setString(3, password.toLowerCase());
+        pstmt.setString(3, firstName.toLowerCase());
         pstmt.setString(4, lastName.toLowerCase());
         
 
         // Execute the update to insert the student record
         int rowsAffected = pstmt.executeUpdate();
     
+           // Check if the insert was successful
         if (rowsAffected > 0) {
             System.out.println("Staff successfully added.");
             stAdded = true;
@@ -133,7 +145,9 @@ public class StaffLogic{
             stAdded = false;
         }
         
-        pstmt.close();
+        pstmt.close();// Close the prepared statement
+        
+        // Handle any exceptions
     }catch (SQLException e){
          e.printStackTrace();
         System.out.println("Error adding staff to the database: " + e.getMessage());
@@ -144,28 +158,25 @@ public class StaffLogic{
     
           
       }
-     //Validates the given password and return a boolean
-    private boolean validPassowrd(String passwordInput){
-        
-      
-        return false;
-    }
-    
+   
 
   
     
   
+      //Validates the given password for a specific username.
     public boolean validPassword(String password,String username){
    
         ArrayList<Staff> staffList = new ArrayList<>(dbManager.getStaffList());
+        
+         // Loop through the list of staff to find a matching username
         for (Staff s: staffList){
             if (s.getUsername().equalsIgnoreCase(username)){
                 if (s.getPassword().equals(password)){
-                return true;
+                return true; // Password matches
                 }
             }
         }
-        return false;
+        return false; // Password does not match
     }
     
    

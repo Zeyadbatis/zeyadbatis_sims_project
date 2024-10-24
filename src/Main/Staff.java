@@ -15,7 +15,7 @@ public class Staff extends Person{
     private String password;
     private int id;
     
-    //class constructor
+       //class  constructor
     public Staff(int id,String firstName,String lastName,String username, String password){
         
         super(firstName,lastName);

@@ -22,12 +22,7 @@ import java.util.Scanner;
  */
 public class RegisterStudent {
    
-     
-    // Scanner for reading user input
-    Scanner scan = new Scanner(System.in);
-    
     // Class instances
-   
     DBManager dbManager;
     Connection conn;
     Student student;
@@ -43,15 +38,12 @@ public class RegisterStudent {
 
 
     
-    // class contrsuctor 
+    // Constructor to initialize the RegisterStudent class
 public RegisterStudent(Panel panel , DBManager dbManager){
     this.panel = panel;
     this.dbManager = dbManager;
     conn = dbManager.getConnection();
-   
 
-    
-    
    }
 
 
@@ -62,10 +54,13 @@ public RegisterStudent(Panel panel , DBManager dbManager){
 
 public boolean newStudent(String firstName, String lastName,String email,String major,char gender){
     
-    boolean stAdded;
+    boolean stAdded; // Flag to check if the student was added successfully
     
-    try { String sql = "INSERT INTO STUDENT (firstName, lastName, email, major,gender) VALUES(?,?,?,?,?)";
+    try { 
+           // SQL query to insert a new student record into the STUDENT table
+        String sql = "INSERT INTO STUDENT (firstName, lastName, email, major,gender) VALUES(?,?,?,?,?)";
     
+         // Set the parameters for the prepared statement
     PreparedStatement pstmt = dbManager.getConnection().prepareStatement(sql);
         pstmt.setString(1, firstName.toLowerCase());
         pstmt.setString(2, lastName.toLowerCase());
@@ -73,27 +68,31 @@ public boolean newStudent(String firstName, String lastName,String email,String 
         pstmt.setString(4, major.toLowerCase());
         pstmt.setString(5, String.valueOf(gender).toLowerCase());
 
-        // Execute the update to insert the student record
+         // Execute the update to insert the student record
         int rowsAffected = pstmt.executeUpdate();
     
+          // Check if the insert was successful
         if (rowsAffected > 0) {
             System.out.println("Student successfully added.");
-            stAdded = true;
+            stAdded = true; // Set flag to true indicating success
         } else {
             System.out.println("Failed to add student.");
-            stAdded = false;
-        }
+            stAdded = false;  // Set flag to false indicating failure
+        } 
         
-        pstmt.close();
+        pstmt.close(); // Close the prepared statement
     }catch (SQLException e){
+          // Handle SQL exceptions
          e.printStackTrace();
         System.out.println("Error adding student to the database: " + e.getMessage());
         stAdded = false;
     }
 
-    return stAdded;
+    return stAdded; // Return the status of the student addition
     
      }
+
+  
   }
 
 
