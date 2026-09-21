@@ -525,6 +525,7 @@ public class Panel extends JPanel{
         // Set up the frame
         JFrame frame = new JFrame("Student Information Management System");
         frame.setSize(800, 470);    // Set frame size
+        frame.setResizable(false);
         frame.setLayout((new FlowLayout(FlowLayout.LEFT)));  // Set layout for the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set default close operation
         frame.setLocationRelativeTo(null);  // Center the frame on the screen
