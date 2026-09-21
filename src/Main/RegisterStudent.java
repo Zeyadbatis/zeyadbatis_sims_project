@@ -50,6 +50,7 @@ public RegisterStudent(Panel panel , DBManager dbManager){
 /**
      * Handles the process of adding a new student by collecting input
      * from the user and writing the new student's information to the file.
+     * Zeyad from the future
      */
 
 public boolean newStudent(String firstName, String lastName,String email,String major,char gender){
